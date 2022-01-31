@@ -26,7 +26,7 @@
             `There has been a problem with your fetch operation for resource "${url}": ` +
               e.message
           )
-        );
+        ).finally(() => console.log(`fetcj ate,[t fpr "${url}" finished`)
     }
     let coffeePromise = fetchAndDecode("coffee.jpg", "blob");
     let teaPromise = fetchAndDecode("tea.jpg", "blob");
