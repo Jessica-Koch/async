@@ -1,31 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
   <head>
     <meta charset="utf-8" />
-    <title>Simple fetch()</title>
+    <title>My test page</title>
   </head>
   <body>
-    <script>
-      // Call the fetch() method to fetch the image, and store it in a variable
-      fetch("coffee.jpg")
+    <p>This is my page</p>
+  </body>
+  <script>
+    function fetchAndDecode(url, type) {
+      return fetch(url)
         .then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           } else {
-            return response.blob();
+            if (type === "blob") {
+              return response.blob();
+            } else if (type === "text") {
+              return response.text();
+            }
           }
         })
-        .then((myBlob) => {
-          let objectURL = URL.createObjectURL(myBlob);
-          let image = document.createElement("img");
-          image.src = objectURL;
-          document.body.appendChild(image);
-        })
-        .catch((e) => {
+        .catch((e) =>
           console.log(
-            "There has been a problem with your fetch operation: " + e.message
-          );
-        });
-    </script>
-  </body>
+            `There has been a problem with your fetch operation for resource "${url}": ` +
+              e.message
+          )
+        );
+    }
+    let coffeePromise = fetchAndDecode("coffee.jpg", "blob");
+    let teaPromise = fetchAndDecode("tea.jpg", "blob");
+    let descriptionPromise = fetchAndDecode("description.txt", "text");
+
+    Promise.all([coffeePromise, teaPromise, txtPromise]).then((values) => {
+      console.log("%c values: ", "color: magenta", values);
+      let coffee = URL.createObjectURL(values[0]);
+      let tea = URL.createObjectURL(values[1]);
+      let text = values[2];
+
+      let image1 = document.createElement("img");
+      let image2 = document.createElement("img");
+      image1.src = coffee;
+      image2.src = tea;
+      document.body.appendChild(image1);
+      document.body.appendChild(image2);
+
+      let para = document.createElement("p");
+      para.textContent = text;
+      document.body.appendChild(para);
+    });
+  </script>
 </html>
